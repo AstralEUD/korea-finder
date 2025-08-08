@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Korea Finder 설정</title>
+<style>
+body {font-family: system-ui, sans-serif; margin: 20px; max-width: 640px;}
+h1 {font-size: 1.4rem; margin-bottom: .5rem;}
+label {display:block; margin-top:1rem; font-weight:600;}
+input[type=text] {padding:6px 8px; font-size:14px; width:220px;}
+small {color:#555; display:block; margin-top:4px;}
+#status {margin-top:1rem; font-weight:600; color:#0a7;}
+footer {margin-top:2rem; font-size:12px; color:#555;}
+a {color:#06c; text-decoration:none;} a:hover{text-decoration:underline;}
+code {background:#f4f4f6; padding:2px 4px; border-radius:4px;}
+.notice {background:#eef9ff; border:1px solid #b5e2f8; padding:10px 12px; border-radius:6px;}
+</style>
+</head>
+<body>
+  <h1>Korea Finder 설정</h1>
+  <div class="notice">
+    기본 단축키는 <code>Shift+K</code> (페이지 레벨) / 명령 fallback <code>Alt+Shift+K</code> (manifest) 입니다.<br>
+    여기서 사용자 정의 키 조합을 설정할 수 있습니다.
+  </div>
+  <label>
+    사용자 정의 단축키 (예: <code>Shift+K</code>, <code>Ctrl+Alt+K</code>)
+    <input id="shortcutInput" type="text" placeholder="Shift+K" />
+    <small>허용: Ctrl / Alt / Shift / Meta + 단일 알파벳 또는 F1..F12. 공란이면 기본값 사용.</small>
+  </label>
+  <button id="saveBtn">저장</button>
+  <div id="status" role="status" aria-live="polite"></div>
+
+  <label>
+    현재 Korea Variant 목록 (읽기전용)
+    <textarea id="variants" rows="6" style="width:100%; font-family:monospace;" readonly></textarea>
+    <small>수정하려면 <code>data/koreaVariants.json</code> 파일을 직접 편집 후 확장을 새로고침.</small>
+  </label>
+
+  <p>
+    GitHub: <a id="ghLink" href="https://github.com/astral/korea-finder" target="_blank" rel="noopener">astral/korea-finder</a>
+  </p>
+  <footer>
+    &copy; 2025 Korea Finder
+  </footer>
+<script src="options.js"></script>
+</body>
+</html>

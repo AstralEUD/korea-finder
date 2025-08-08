@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Korea Finder",
+  "short_name": "KoreaFinder",
+  "version": "0.2.0",
+  "description": "Shift+K (customizable) 로 각종 사이트의 국가 선택 목록에서 한국(South Korea / Republic of Korea / 대한민국 등)을 자동 선택.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "commands": {
+    "find-korea": {
+      "suggested_key": {
+        "default": "Alt+Shift+K"
+      },
+      "description": "Find and select Korea in country dropdown (fallback; user can set custom key in options)"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "options_page": "options.html",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["data/koreaVariants.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
