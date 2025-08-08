@@ -2,13 +2,19 @@
   "manifest_version": 3,
   "name": "Korea Finder",
   "short_name": "KoreaFinder",
-  "version": "0.2.0",
+  "version": "0.2.4",
+  "author": "astral",
+  "homepage_url": "https://github.com/AstralEUD/korea-finder",
   "description": "Shift+K (customizable) 로 각종 사이트의 국가 선택 목록에서 한국(South Korea / Republic of Korea / 대한민국 등)을 자동 선택.",
+  "action": {
+    "default_icon": "icons/icon.png",
+    "default_popup": "popup.html"
+  },
   "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/icon.png",
+    "32": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
   },
   "permissions": [
     "scripting",

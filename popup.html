@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<meta charset="utf-8" />
+	<title>Korea Finder Popup</title>
+	<link rel="stylesheet" href="ui.css" />
+</head>
+<body class="popup-root">
+	<header>
+		<h1>Korea Finder</h1>
+	</header>
+	<main>
+		<section>
+			<label class="fld-label">단축키
+				<input id="shortcutInput" type="text" placeholder="Shift+K" />
+			</label>
+			<div class="hint">Ctrl / Alt / Shift / Meta + Key (A~Z,F1~F12). 비우면 기본.</div>
+			<button id="saveBtn" class="primary">저장</button>
+			<div id="status" class="status" role="status"></div>
+		</section>
+		<section class="quick">
+			<button id="runBtn" class="ghost">🇰🇷 지금 찾기</button>
+		</section>
+		<section class="links">
+			<a href="https://github.com/AstralEUD/korea-finder" target="_blank" rel="noopener" class="gh">GitHub 저장소</a>
+			<a href="options.html" target="_blank" class="opt">전체 설정 열기 ↗</a>
+		</section>
+	</main>
+	<footer>&copy; 2025 Korea Finder</footer>
+	<script src="popup.js"></script>
+</body>
+</html>

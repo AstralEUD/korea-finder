@@ -35,7 +35,8 @@ function scoreMatch(optionText, variantsNorm) {
     if (/republic/.test(n)) s += 40;
     return s;
   }
-  if (/대한민국|한국/.test(optionText)) return 900;
+  // Korean language / country (include 한국어)
+  if (/대한민국|한국어|한국/.test(optionText)) return 900;
   return 0;
 }
 
@@ -113,42 +114,97 @@ function findAriaCombobox(variantsNorm) {
   return false;
 }
 
+// New: handle standalone listbox overlays (e.g., Material UI / Google menus) not directly tied to a combobox element we can detect.
+function findStandaloneListbox(variantsNorm) {
+  const listboxes = collectAllListboxes();
+  for (const lb of listboxes) {
+    const items = lb.querySelectorAll('[role="option"], li');
+    if (!items.length) continue;
+    let best = {score: 0, item: null};
+    items.forEach(item => {
+      const txt = item.textContent || '';
+  let s = scoreMatch(txt, variantsNorm);
+  const dataVal = (item.getAttribute('data-value') || '').toLowerCase();
+  if (['kr','ko'].includes(dataVal)) s += 1200;
+  if (/^ko$/i.test(txt.trim())) s += 1000;
+  if (/한국어/.test(txt)) s += 300;
+      if (s > best.score) best = {score: s, item};
+    });
+    if (best.item && best.score >= 100) { // require minimal relevance to avoid random pick
+      best.item.scrollIntoView({block: 'center', behavior: 'smooth'});
+      flash(best.item);
+      best.item.click();
+      return true;
+    }
+  }
+  return false;
+}
+
+function collectAllListboxes() {
+  const seen = new Set();
+  const result = [];
+  function isVisible(el){
+    if (!(el instanceof Element)) return false;
+    const rect = el.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return false;
+    const style = window.getComputedStyle(el);
+    if (style.visibility === 'hidden' || style.display === 'none') return false;
+    return true;
+  }
+  function walk(root, depth=0){
+    if (depth > 3) return; // avoid deep recursion
+    const nodes = root.querySelectorAll('[role="listbox"]');
+    nodes.forEach(n => { if (!seen.has(n) && isVisible(n)) { seen.add(n); result.push(n); } });
+    // explore shadow roots of immediate children (limited depth)
+    root.querySelectorAll('*').forEach(el => {
+      if (el.shadowRoot) walk(el.shadowRoot, depth+1);
+    });
+  }
+  walk(document);
+  return result;
+}
+
 async function findAndSelectKorea() {
   const variants = await loadVariants();
   const variantsNorm = new Set(variants.map(v => norm(v)));
 
-  // 1. Active / focused select first
-  const active = document.activeElement;
-  if (active && active.tagName === 'SELECT') {
-    if (selectHtmlSelect(active, variantsNorm)) return true;
-  }
-
-  // 2. All select elements (heuristic: visible & many country options)
-  const selects = Array.from(document.querySelectorAll('select')).filter(s => s.offsetParent !== null);
-  for (const sel of selects) {
-    if (selectHtmlSelect(sel, variantsNorm)) return true;
-  }
-
-  // 3. datalist
-  if (findMatchingDataList(variantsNorm)) return true;
-
-  // 4. ARIA combobox / listbox patterns
-  if (findAriaCombobox(variantsNorm)) return true;
-
-  // 5. Fallback: try inputs with autocomplete country style lists
-  const inputs = document.querySelectorAll('input[type="text"], input:not([type])');
-  for (const input of inputs) {
-    const placeholder = (input.getAttribute('placeholder') || '').toLowerCase();
-    if (/country|국가|나라/.test(placeholder)) {
-      input.focus();
-      input.value = variants[0];
-      input.dispatchEvent(new Event('input', {bubbles: true}));
-      flash(input);
-      return true;
+  const attempt = () => {
+    // 1. Active / focused select first
+    const active = document.activeElement;
+    if (active && active.tagName === 'SELECT') {
+      if (selectHtmlSelect(active, variantsNorm)) return true;
     }
-  }
+    // 2. All select elements
+    const selects = Array.from(document.querySelectorAll('select')).filter(s => s.offsetParent !== null);
+    for (const sel of selects) {
+      if (selectHtmlSelect(sel, variantsNorm)) return true;
+    }
+    // 3. datalist
+    if (findMatchingDataList(variantsNorm)) return true;
+    // 4. combobox
+    if (findAriaCombobox(variantsNorm)) return true;
+    // 4b. standalone listbox
+    if (findStandaloneListbox(variantsNorm)) return true;
+    // 5. fallback input
+    const inputs = document.querySelectorAll('input[type="text"], input:not([type])');
+    for (const input of inputs) {
+      const placeholder = (input.getAttribute('placeholder') || '').toLowerCase();
+      if (/country|국가|나라/.test(placeholder)) {
+        input.focus();
+        input.value = variants[0];
+        input.dispatchEvent(new Event('input', {bubbles: true}));
+        flash(input);
+        return true;
+      }
+    }
+    return false;
+  };
 
-  console.info('Korea Finder: no suitable element found');
+  for (let i=0;i<10;i++) { // retry ~1.2s for delayed overlays
+    if (attempt()) return true;
+    await new Promise(r=>setTimeout(r,120));
+  }
+  console.info('Korea Finder: no suitable element found after retries');
   return false;
 }
 
