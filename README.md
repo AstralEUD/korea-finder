@@ -55,4 +55,4 @@ Shift+K (사용자 정의 가능) 로 어떤 사이트의 국가 선택(Select, 
 https://github.com/astral/korea-finder
 
 ## 라이선스
-MIT (아이콘은 교체 시 해당 저작권 준수 필요)
+GPL v.3.0
