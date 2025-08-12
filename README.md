@@ -8,7 +8,7 @@
 - Manifest fallback 명령: `Alt+Shift+K` (chrome://extensions > 단축키 에서 재설정 가능)
 - 다양한 표기 탐지: South Korea, Republic of Korea, Korea (South), Korea, 대한민국, 한국, 韓国, etc. (확장된 다국어/변형 포함)
 - `<select>`, `datalist`, ARIA combobox/listbox, 일반 country input placeholder 를 순차 탐색
-- JSON 리스트(`data/koreaVariants.json`) 로 변형 가능 (사용자 커스터마이즈 예정 부분)
+- JSON 리스트(`data/koreaVariants.json`) 로 변형 가능 
 - Options 페이지에서 단축키 즉시 변경 및 variant 목록 미리보기
 
 ## 설치 (개발용 로드)
