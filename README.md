@@ -1,4 +1,4 @@
-# Korea Finder (Chrome Extension)
+# Korea Finder ([Chrome Extension](https://chromewebstore.google.com/detail/korea-finder/depmielabcicjmakklidjpiidpmplafc?hl=ko)) 
 
 혹시 회원가입 시 대한민국, South Korea, Republic of Korea... 다양한 대한민국의 이름을 찾다가 지치지 않으셨나요?
 이 프로그램은 단축키 Shift+K 로 어떤 사이트의 국가 선택 UI 에서 한국을 자동으로 찾아 선택해주는 크롬 익스텐션입니다.
