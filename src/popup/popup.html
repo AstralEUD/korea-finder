@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>Korea Finder</title>
+  <link rel="stylesheet" href="../styles/design-system.css" />
+</head>
+<body class="popup-page">
+  <header class="popup-header">
+    <div class="popup-brand">
+      <img src="../../icons/icon-32.png" alt="Korea Finder 아이콘" />
+      <h1>Korea Finder</h1>
+      <span id="versionBadge" class="kf-badge">v0.4.0</span>
+    </div>
+    <label class="kf-switch" title="확장 프로그램 활성화/비활성화">
+      <input id="enabledToggle" type="checkbox" aria-label="확장 프로그램 활성화" />
+      <span class="kf-switch-track"></span>
+    </label>
+  </header>
+
+  <section class="kf-card">
+    <button id="runBtn" class="kf-btn primary full" type="button">
+      <span>🇰🇷 지금 한국 찾기</span>
+      <span id="runShortcutKbd" class="kf-kbd-group"></span>
+    </button>
+    <div id="resultBanner" class="kf-banner" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="kf-card">
+    <div class="popup-host-info">
+      <div class="popup-host-label">현재 사이트</div>
+      <div id="currentHostLabel" class="popup-host-name">확인 중...</div>
+    </div>
+    <div class="popup-site-divider"></div>
+    <div class="popup-site-option">
+      <span>접속 시 자동 선택</span>
+      <label class="kf-switch" title="이 사이트에 접속할 때 자동으로 대한민국 선택">
+        <input id="siteAutoToggle" type="checkbox" aria-label="현재 사이트 자동 선택" />
+        <span class="kf-switch-track"></span>
+      </label>
+    </div>
+    <div class="popup-site-option">
+      <span>단축키 동작 제외</span>
+      <label class="kf-switch" title="이 사이트에서 단축키 비활성화">
+        <input id="siteExcludeToggle" type="checkbox" aria-label="현재 사이트 제외" />
+        <span class="kf-switch-track"></span>
+      </label>
+    </div>
+    <div id="siteExcludeHint" class="kf-empty" style="margin-top:6px;">
+      자동 선택과 제외 설정은 도메인 단위로 저장됩니다.
+    </div>
+  </section>
+
+  <section class="kf-card">
+    <h2 class="kf-card-title">페이지 단축키</h2>
+    <p class="kf-card-desc">녹화 박스를 클릭한 뒤 원하는 키 조합을 누르세요.</p>
+    <div class="kf-recorder-row">
+      <button id="shortcutRecorder" class="kf-recorder" type="button">
+        <span id="shortcutKbdPreview" class="kf-kbd-group"></span>
+        <span id="recorderStatusText" class="kf-recorder-hint">클릭하여 변경</span>
+      </button>
+      <button id="resetShortcutBtn" class="kf-btn ghost sm" type="button" title="기본값(Shift+K)으로 복원">
+        초기화
+      </button>
+    </div>
+    <div id="shortcutBanner" class="kf-banner" role="status" aria-live="polite"></div>
+  </section>
+
+  <footer class="popup-footer">
+    <div class="popup-footer-links">
+      <button id="openOptionsBtn" class="popup-link-btn" type="button">전체 설정</button>
+      <span>·</span>
+      <button id="openGlobalShortcutsBtn" class="popup-link-btn" type="button">전역 단축키</button>
+    </div>
+    <a href="https://github.com/AstralEUD/korea-finder" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+
+  <script src="../shared/constants.js"></script>
+  <script src="../shared/storage.js"></script>
+  <script src="../shared/shortcut.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

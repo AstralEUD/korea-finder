@@ -1,0 +1,22 @@
+{
+  "name": "korea-finder",
+  "version": "0.4.0",
+  "description": "Press Shift+K to auto-select South Korea in country, phone, timezone, and currency selection UIs.",
+  "private": true,
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AstralEUD/korea-finder.git"
+  },
+  "scripts": {
+    "test": "node scripts/run-tests.mjs",
+    "package": "node scripts/package.mjs all",
+    "package:chrome": "node scripts/package.mjs chrome",
+    "package:edge": "node scripts/package.mjs edge",
+    "package:firefox": "node scripts/package.mjs firefox",
+    "package:whale": "node scripts/package.mjs whale"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

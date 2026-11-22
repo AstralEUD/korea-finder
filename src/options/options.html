@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Korea Finder 설정</title>
+  <link rel="stylesheet" href="../styles/design-system.css" />
+</head>
+<body class="options-page">
+  <div class="options-container">
+    <header class="options-header">
+      <div class="options-brand">
+        <img src="../../icons/icon-48.png" alt="Korea Finder 아이콘" />
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <h1>Korea Finder 설정</h1>
+            <span id="versionBadge" class="kf-badge accent">v0.4.0</span>
+          </div>
+          <p>단축키, 사이트별 자동/제외, 시간대·통화·언어 옵션 및 백업을 관리하고 아래 플레이그라운드에서 즉시 테스트하세요.</p>
+        </div>
+      </div>
+      <a class="kf-btn ghost sm" href="https://github.com/AstralEUD/korea-finder" target="_blank" rel="noopener">
+        GitHub 저장소 ↗
+      </a>
+    </header>
+
+    <div class="options-grid">
+      <!-- Shortcut Settings -->
+      <section class="kf-card options-card">
+        <h2 class="kf-card-title">단축키 설정</h2>
+        <p class="kf-card-desc">한글 입력(IME) 상태에서도 물리 키 기준으로 동일하게 동작합니다.</p>
+
+        <div class="kf-recorder-row">
+          <button id="shortcutRecorder" class="kf-recorder" type="button">
+            <span id="shortcutKbdPreview" class="kf-kbd-group"></span>
+            <span id="recorderStatusText" class="kf-recorder-hint">클릭하여 새 단축키 녹화</span>
+          </button>
+          <button id="resetShortcutBtn" class="kf-btn ghost sm" type="button">초기화</button>
+        </div>
+        <div id="shortcutStatus" class="kf-banner" role="status" aria-live="polite"></div>
+
+        <div class="setting-item" style="margin-top:14px;padding-bottom:0;border-bottom:none;">
+          <div>
+            <div class="setting-label">Chrome 전역 단축키 (Fallback)</div>
+            <div class="setting-sub">기본값 <kbd class="kf-kbd">Alt+Shift+K</kbd> · 브라우저 확장 설정에서 변경</div>
+          </div>
+          <button id="openGlobalShortcutsBtn" class="kf-btn sm" type="button">바로가기</button>
+        </div>
+      </section>
+
+      <!-- Behavior Preferences -->
+      <section class="kf-card options-card">
+        <h2 class="kf-card-title">동작 환경설정</h2>
+        <p class="kf-card-desc">모든 변경 사항은 Chrome Sync 저장소에 즉시 저장됩니다.</p>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">확장 프로그램 활성화</div>
+            <div class="setting-sub">페이지 내 단축키 자동 감지를 켜거나 끕니다.</div>
+          </div>
+          <label class="kf-switch">
+            <input id="optEnabled" type="checkbox" />
+            <span class="kf-switch-track"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">선택 결과 토스트 알림</div>
+            <div class="setting-sub">한국 선택 여부와 다중 필드 순환 안내를 우측 하단에 표시합니다.</div>
+          </div>
+          <label class="kf-switch">
+            <input id="optShowToast" type="checkbox" />
+            <span class="kf-switch-track"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">언어 항목(한국어/Korean) 포함</div>
+            <div class="setting-sub">국가 목록이 아닌 일반 언어 선택기에서도 한국어를 함께 찾습니다.</div>
+          </div>
+          <label class="kf-switch">
+            <input id="optIncludeLanguage" type="checkbox" />
+            <span class="kf-switch-track"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">시간대 항목(Asia/Seoul · UTC+9) 포함</div>
+            <div class="setting-sub">시간대 선택 필드에서 서울 표준시(KST)를 우선 선택합니다.</div>
+          </div>
+          <label class="kf-switch">
+            <input id="optIncludeTimezone" type="checkbox" />
+            <span class="kf-switch-track"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">통화 항목(KRW · ₩) 포함</div>
+            <div class="setting-sub">결제·표시 통화 선택 필드에서 대한민국 원(KRW)을 선택합니다.</div>
+          </div>
+          <label class="kf-switch">
+            <input id="optIncludeCurrency" type="checkbox" />
+            <span class="kf-switch-track"></span>
+          </label>
+        </div>
+      </section>
+
+      <!-- Auto-Select Hosts -->
+      <section class="kf-card options-card">
+        <h2 class="kf-card-title">자동 선택 사이트 (Auto-Select)</h2>
+        <p class="kf-card-desc">단축키를 누르지 않아도 페이지 접속 시 자동으로 대한민국을 선택합니다.</p>
+
+        <div class="input-row">
+          <input id="autoHostInput" class="kf-input" type="text" placeholder="예: amazon.com" />
+          <button id="addAutoHostBtn" class="kf-btn primary sm" type="button">추가</button>
+        </div>
+        <div id="autoHostChips" class="kf-chips"></div>
+        <p id="autoHostEmpty" class="kf-empty">등록된 자동 선택 사이트가 없습니다.</p>
+      </section>
+
+      <!-- Disabled Hosts -->
+      <section class="kf-card options-card">
+        <h2 class="kf-card-title">제외 사이트 관리</h2>
+        <p class="kf-card-desc">단축키 충돌을 피하고 싶은 웹사이트 도메인을 추가하세요.</p>
+
+        <div class="input-row">
+          <input id="hostInput" class="kf-input" type="text" placeholder="예: docs.google.com" />
+          <button id="addHostBtn" class="kf-btn primary sm" type="button">추가</button>
+        </div>
+        <div id="hostChips" class="kf-chips"></div>
+        <p id="hostEmpty" class="kf-empty">제외된 사이트가 없습니다.</p>
+      </section>
+
+      <!-- Custom Variants & Built-in Viewer -->
+      <section class="kf-card options-card">
+        <h2 class="kf-card-title">키워드(Variant) 관리</h2>
+        <p class="kf-card-desc">기본 다국어 목록 외에 사이트별 특수 표기를 직접 추가할 수 있습니다.</p>
+
+        <div class="input-row">
+          <input id="variantInput" class="kf-input" type="text" placeholder="예: Korea (KR +82)" />
+          <button id="addVariantBtn" class="kf-btn primary sm" type="button">추가</button>
+        </div>
+        <div id="customVariantChips" class="kf-chips"></div>
+        <p id="customVariantEmpty" class="kf-empty">추가된 사용자 키워드가 없습니다.</p>
+
+        <details class="builtin-details">
+          <summary>
+            <span>기본 내장 다국어 키워드 보기</span>
+            <span id="builtinCountBadge" class="kf-badge">0개</span>
+          </summary>
+          <div id="builtinList" class="builtin-list"></div>
+        </details>
+      </section>
+
+      <!-- Settings Backup & Restore -->
+      <section class="kf-card options-card">
+        <h2 class="kf-card-title">설정 백업 및 복원</h2>
+        <p class="kf-card-desc">단축키, 커스텀 키워드, 사이트 목록을 JSON 파일로 내보내거나 가져옵니다.</p>
+
+        <div class="backup-actions">
+          <button id="exportSettingsBtn" class="kf-btn sm" type="button">JSON 내보내기</button>
+          <button id="importSettingsBtn" class="kf-btn ghost sm" type="button">JSON 가져오기</button>
+          <input id="importSettingsFile" type="file" accept="application/json,.json" hidden />
+        </div>
+        <div id="backupStatus" class="kf-banner" role="status" aria-live="polite"></div>
+      </section>
+    </div>
+
+    <!-- Interactive Playground -->
+    <section id="playgroundCard" class="kf-card options-card">
+      <div class="playground-header">
+        <div>
+          <h2 class="kf-card-title">인터랙티브 테스트 플레이그라운드</h2>
+          <p class="kf-card-desc" style="margin-bottom:0;">
+            현재 설정된 단축키(<span id="pgShortcutInline"></span>)를 누르거나 <strong>지금 테스트 실행</strong> 버튼을 눌러 다중 필드 순환, 가상 스크롤 필터링, 시간대·통화 선택 및 북한 차단 동작을 확인하세요.
+          </p>
+        </div>
+        <div class="playground-actions">
+          <button id="testRunBtn" class="kf-btn primary sm" type="button">🇰🇷 지금 테스트 실행</button>
+          <button id="testResetBtn" class="kf-btn ghost sm" type="button">초기화</button>
+        </div>
+      </div>
+
+      <div class="playground-grid">
+        <div class="pg-field">
+          <label for="pgCountrySelect">1. 북한 함정 포함 국가 선택 (&lt;select&gt;)</label>
+          <select id="pgCountrySelect" class="kf-select" name="country">
+            <option value="">-- 국가를 선택하세요 --</option>
+            <option value="AF">Afghanistan (+93)</option>
+            <option value="AU">Australia (+61)</option>
+            <option value="CA">Canada (+1)</option>
+            <option value="KP">Korea, Democratic People's Republic of (+850)</option>
+            <option value="KP_ALT">North Korea</option>
+            <option value="KR">Republic of Korea (+82)</option>
+            <option value="JP">Japan (+81)</option>
+            <option value="US">United States (+1)</option>
+          </select>
+        </div>
+
+        <div class="pg-field">
+          <label for="pgIsoSelect">2. ISO 코드 기반 선택 (&lt;select autocomplete="country"&gt;)</label>
+          <select id="pgIsoSelect" class="kf-select" autocomplete="country" name="billing_country">
+            <option value="">-- Select ISO --</option>
+            <option value="AU">AU</option>
+            <option value="BR">BR</option>
+            <option value="CA">CA</option>
+            <option value="CN">CN</option>
+            <option value="DE">DE</option>
+            <option value="ES">ES</option>
+            <option value="FR">FR</option>
+            <option value="GB">GB</option>
+            <option value="IN">IN</option>
+            <option value="IT">IT</option>
+            <option value="JP">JP</option>
+            <option value="KP">KP</option>
+            <option value="KR">KR</option>
+            <option value="NL">NL</option>
+            <option value="SG">SG</option>
+            <option value="US">US</option>
+          </select>
+        </div>
+
+        <div class="pg-field">
+          <label for="pgPhoneSelect">3. 국가 전화번호 선택 (autocomplete="tel-country-code")</label>
+          <select id="pgPhoneSelect" class="kf-select" autocomplete="tel-country-code" name="phone_country_code">
+            <option value="">-- Dial Code --</option>
+            <option value="+1">+1</option>
+            <option value="+44">+44</option>
+            <option value="+81">+81</option>
+            <option value="+850">+850</option>
+            <option value="+82">+82</option>
+            <option value="+86">+86</option>
+          </select>
+        </div>
+
+        <div class="pg-field">
+          <label for="pgDatalistInput">4. 다국어 Datalist (&lt;input list&gt;)</label>
+          <input id="pgDatalistInput" class="kf-input" list="pgCountriesDatalist" name="shipping_country" placeholder="국가 입력 또는 자동 선택" />
+          <datalist id="pgCountriesDatalist">
+            <option value="United Kingdom"></option>
+            <option value="Corée du Sud"></option>
+            <option value="Canada"></option>
+            <option value="Deutschland"></option>
+          </datalist>
+        </div>
+
+        <div class="pg-field">
+          <label id="pgComboLabel">5. 커스텀 ARIA Combobox (클릭 후 동적 선택)</label>
+          <button
+            id="pgComboTrigger"
+            class="pg-combo-btn"
+            type="button"
+            role="combobox"
+            aria-labelledby="pgComboLabel"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="pgComboListbox"
+            name="country_combo"
+          >
+            <span id="pgComboValue">-- 국가를 선택하세요 --</span>
+            <span>▾</span>
+          </button>
+          <ul id="pgComboListbox" class="pg-listbox" role="listbox" hidden>
+            <li role="option" data-value="US">United States</li>
+            <li role="option" data-value="KP">Korea, Democratic People's Republic of</li>
+            <li role="option" data-value="KR">South Korea (대한민국)</li>
+            <li role="option" data-value="JP">Japan (日本)</li>
+          </ul>
+        </div>
+
+        <div class="pg-field">
+          <label id="pgVirtualLabel">6. 가상 스크롤 / 검색형 Combobox (Typeahead)</label>
+          <button
+            id="pgVirtualTrigger"
+            class="pg-combo-btn"
+            type="button"
+            role="combobox"
+            aria-labelledby="pgVirtualLabel"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="pgVirtualListbox"
+            name="virtual_country_combo"
+          >
+            <span id="pgVirtualValue">-- 검색하여 국가 선택 --</span>
+            <span>▾</span>
+          </button>
+          <div id="pgVirtualListbox" class="pg-listbox" role="listbox" hidden>
+            <div class="pg-listbox-search">
+              <input id="pgVirtualSearchInput" class="kf-input" type="search" placeholder="국가명 검색..." />
+            </div>
+            <ul id="pgVirtualOptions" style="list-style:none;margin:0;padding:0;"></ul>
+          </div>
+        </div>
+
+        <div class="pg-field">
+          <label for="pgTimezoneSelect">7. 시간대 선택 (&lt;select name="timezone"&gt;)</label>
+          <select id="pgTimezoneSelect" class="kf-select" name="timezone">
+            <option value="">-- 시간대를 선택하세요 --</option>
+            <option value="America/New_York">America/New_York (GMT-05:00)</option>
+            <option value="Asia/Pyongyang">Asia/Pyongyang (GMT+09:00)</option>
+            <option value="Asia/Tokyo">Asia/Tokyo (GMT+09:00)</option>
+            <option value="Asia/Seoul">Asia/Seoul (GMT+09:00)</option>
+          </select>
+        </div>
+
+        <div class="pg-field">
+          <label for="pgCurrencySelect">8. 통화 선택 (&lt;select name="currency"&gt;)</label>
+          <select id="pgCurrencySelect" class="kf-select" name="currency">
+            <option value="">-- 통화를 선택하세요 --</option>
+            <option value="USD">USD ($) - US Dollar</option>
+            <option value="JPY">JPY (¥) - Japanese Yen</option>
+            <option value="KPW">KPW (₩) - North Korean Won</option>
+            <option value="KRW">KRW (₩) - South Korean Won</option>
+          </select>
+        </div>
+
+        <div class="pg-field">
+          <label id="pgDecoyLabel">참고: 무관한 UI 콤보박스 (자동 클릭되지 않아야 함)</label>
+          <button
+            id="pgDecoyCombo"
+            class="pg-combo-btn"
+            type="button"
+            role="combobox"
+            aria-labelledby="pgDecoyLabel"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="pgDecoyListbox"
+          >
+            <span>정렬 기준: 추천순</span>
+            <span>▾</span>
+          </button>
+          <ul id="pgDecoyListbox" class="pg-listbox" role="listbox" hidden>
+            <li role="option">추천순</li>
+            <li role="option">최신순</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <footer class="options-footer">
+      <span>&copy; 2025-2026 Korea Finder · GPL-3.0</span>
+      <span>개인정보를 수집하거나 외부 서버로 전송하지 않습니다.</span>
+    </footer>
+  </div>
+
+  <script src="../shared/constants.js"></script>
+  <script src="../shared/storage.js"></script>
+  <script src="../shared/shortcut.js"></script>
+  <script src="../shared/matcher.js"></script>
+  <script src="../content/toast.js"></script>
+  <script src="../content/domFinder.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

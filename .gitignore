@@ -1,0 +1,7 @@
+dist/
+node_modules/
+.build-staging/
+*.zip
+*.xpi
+.DS_Store
+Thumbs.db

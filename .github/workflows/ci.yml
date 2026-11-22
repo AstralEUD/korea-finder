@@ -1,0 +1,71 @@
+name: CI & Multi-Browser Packaging
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  test-and-package:
+    name: Test & Package (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run automated test suite & manifest checks
+        run: npm test
+
+      - name: Build multi-browser packages
+        run: npm run package
+
+      - name: Verify generated packages
+        run: |
+          ls -lh dist/
+          for f in dist/*.zip dist/*.xpi; do
+            unzip -t "$f" > /dev/null
+          done
+          node -e '
+            const fs = require("fs");
+            const files = fs.readdirSync("dist");
+            for (const target of ["chrome", "edge", "firefox", "whale"]) {
+              if (!files.some((f) => f.endsWith("-" + target + ".zip"))) {
+                throw new Error("Missing zip for " + target);
+              }
+            }
+            if (!files.some((f) => f.endsWith("-firefox.xpi"))) {
+              throw new Error("Missing firefox.xpi");
+            }
+            if (!files.includes("SHA256SUMS.txt")) {
+              throw new Error("Missing SHA256SUMS.txt");
+            }
+            console.log("All target packages verified.");
+          '
+          (cd dist && sha256sum -c SHA256SUMS.txt)
+
+      - name: Upload browser packages artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: korea-finder-packages
+          path: dist/*
+          retention-days: 30
+
+  windows-powershell-package:
+    name: PowerShell Packager Check (Windows)
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Windows PowerShell packager
+        shell: pwsh
+        run: |
+          powershell -ExecutionPolicy Bypass -File scripts/package.ps1 -Target all
+          Get-ChildItem dist | Format-Table Name, Length

@@ -1,36 +1,78 @@
-# Korea Finder ([Chrome Extension](https://chromewebstore.google.com/detail/korea-finder/depmielabcicjmakklidjpiidpmplafc?hl=ko)) 
+# Korea Finder ([Chrome Extension](https://chromewebstore.google.com/detail/korea-finder/depmielabcicjmakklidjpiidpmplafc?hl=ko))
 
-혹시 회원가입 시 대한민국, South Korea, Republic of Korea... 다양한 대한민국의 이름을 찾다가 지치지 않으셨나요?
-이 프로그램은 단축키 Shift+K 로 어떤 사이트의 국가 선택 UI 에서 한국을 자동으로 찾아 선택해주는 크롬 익스텐션입니다.
+회원가입이나 결제 폼에서 `South Korea`, `Republic of Korea`, `Korea, Republic of`, `대한민국`, `Corée du Sud` 등 제각각인 대한민국 표기를 매번 스크롤하며 찾지 마세요.
+**Korea Finder**는 단축키 `Shift+K`(또는 우클릭 메뉴·팝업 버튼) 한 번으로 각종 국가·전화번호·시간대·통화 선택 UI에서 대한민국을 정확하게 찾아 자동 선택해주는 경량 브라우저 확장 프로그램입니다.
 
-## 기능
-- 기본 페이지 단축키: `Shift + K` (Options 에서 변경 가능)
-- Manifest fallback 명령: `Alt+Shift+K` (chrome://extensions > 단축키 에서 재설정 가능)
-- 다양한 표기 탐지: South Korea, Republic of Korea, Korea (South), Korea, 대한민국, 한국, 韓国, etc. (확장된 다국어/변형 포함)
-- `<select>`, `datalist`, ARIA combobox/listbox, 일반 country input placeholder 를 순차 탐색
-- JSON 리스트(`data/koreaVariants.json`) 로 변형 가능 
-- Options 페이지에서 단축키 즉시 변경 및 variant 목록 미리보기
+## 주요 기능 (v0.4.0)
+
+- **고정밀 다국어 매칭 & 북한 오선택 방지**: 영어, 한국어, 한자/일본어(`韓国`), 중국어(`南韓`, `韩国`), 유럽 악센트(`Corée du Sud`, `Südkorea`), 키릴(`Южная Корея`), 아랍어(`كوريا الجنوبية`), ISO 코드(`KR`, `KOR`, `410`), 국제전화 코드(`+82`)를 지원하며 `North Korea`, `DPRK`, `Democratic People's Republic of Korea`, `+850`, `KPW`, `Asia/Pyongyang` 등 북한 표기는 원천 차단합니다.
+- **시간대(Timezone) & 통화(Currency) 자동 매칭**: 시간대 필드에서 `Asia/Seoul` / `KST` / `GMT+09:00`(`Asia/Tokyo` 제외)을, 결제 통화 필드에서 `KRW` / `₩` / `South Korean Won`을 자동 선택합니다.
+- **실전 SPA & 커스텀 위젯 대응**:
+  - 검색형(Typeahead)·가상 스크롤(Virtualized) ARIA `combobox` 자동 타이핑 필터링 지원
+  - 포인터/마우스 이벤트 시퀀스(`pointerdown` → `mousedown` → `pointerup` → `mouseup` → `click`) 에뮬레이션
+  - `intl-tel-input`(`.iti`, `data-country-code="kr"`, `data-dial-code="82"`) 위젯 지원
+  - `<select>`, `<datalist>`, Shadow DOM, `iframe` 내부 폼, 우클릭 타겟 우선 선택 지원
+- **한글 IME 완벽 대응 단축키 & 통합 다중 필드 순환**: 물리 키 코드(`e.code`) 기준 매칭으로 한글 입력 상태에서도 즉시 동작하며, 한 페이지 내 여러 국가·전화·콤보박스 필드를 5초 내 연속 실행으로 순환 선택합니다.
+- **사이트별 자동 선택(Auto-Select), 제외 도메인 & 설정 백업**: 팝업·설정에서 접속 시 자동 선택 사이트 및 제외 사이트를 관리하고, 설정을 JSON 파일로 내보내기/가져오기 할 수 있습니다.
+- **멀티 브라우저 패키징 & GitHub Actions CI/CD**: Chrome, Edge, Firefox(`.zip`/`.xpi`), Naver Whale용 경량 패키지를 자동 빌드 및 검증합니다.
+
+## 폴더 구조
+
+```text
+korea-finder/
+├── manifest.json
+├── package.json
+├── .github/workflows/ (ci.yml, release.yml)
+├── scripts/ (package.mjs, package.ps1, run-tests.mjs)
+├── data/koreaVariants.json
+├── icons/ (icon-16/32/48/128.png)
+├── src/
+│   ├── background/serviceWorker.js
+│   ├── content/ (domFinder.js, main.js, toast.js)
+│   ├── options/ (options.html, options.js)
+│   ├── popup/ (popup.html, popup.js)
+│   ├── shared/ (constants.js, matcher.js, shortcut.js, storage.js)
+│   └── styles/design-system.css
+└── tests/ (index.html, test-suite.js)
+```
 
 ## 설치 (개발용 로드)
-1. 이 리포를 클론 또는 다운로드
-2. Chrome > 확장 프로그램 > 개발자 모드 ON
-3. "압축해제된 확장 프로그램을 로드" 클릭 후 폴더 선택
-4. 아무 페이지에서 기본 Shift+K 또는 지정한 커스텀 키를 눌러 테스트
 
-**[링크](https://detailedmanual.net/%ED%81%AC%EB%A1%AC-%ED%99%95%EC%9E%A5-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%88%98%EB%8F%99-%EC%84%A4%EC%B9%98-%EB%B0%A9%EB%B2%95/) 를 참조하시면 도움이 됩니다!**
+1. 이 저장소를 클론 또는 다운로드합니다.
+2. Chrome/Edge/Whale 주소창에서 `chrome://extensions`를 열고 우측 상단 **개발자 모드**를 켭니다.
+3. **압축해제된 확장 프로그램을 로드합니다**를 클릭한 뒤 프로젝트 루트 폴더를 선택합니다.
+4. 아무 웹페이지에서 `Shift+K` 또는 우클릭 메뉴로 동작을 확인합니다. (Options 페이지 하단 플레이그라운드에서도 즉시 테스트 가능)
 
-크롬 웹 스토어 등록은 진행중입니다.
+## 테스트 및 멀티 브라우저 패키징
 
-## 커스터마이징
-`data/koreaVariants.json` 에 원하는 표현을 추가/삭제 후 확장 새로고침.
+```bash
+# 자동화 테스트 및 매니페스트 검증 (Node.js 18+)
+npm test
 
-## 단축키 변경
-- 확장 관리 페이지에서 Options 열기 → 원하는 조합 입력 (예: `Ctrl+Alt+K`) → 저장
-- 입력 형식: (Ctrl|Alt|Shift|Meta)+Key (Key = A~Z 또는 F1~F12)
-- 비워두면 기본(Shift+K) 사용
+# 모든 브라우저용 배포 패키지 생성 (chrome, edge, firefox .zip/.xpi, whale + SHA256SUMS.txt)
+npm run package
+
+# 특정 브라우저만 패키징
+npm run package:chrome
+npm run package:edge
+npm run package:firefox
+npm run package:whale
+```
+
+Windows PowerShell 환경에서는 Node.js 없이도 아래 스크립트로 패키징할 수 있습니다:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/package.ps1 -Target all
+```
+
+### GitHub Actions 자동화
+
+- **CI (`.github/workflows/ci.yml`)**: `main`/`master` 브랜치 push 및 PR마다 테스트 실행 후 `chrome`, `edge`, `firefox`, `whale` 패키지를 빌드·검증하고 아티팩트로 업로드합니다.
+- **Release (`.github/workflows/release.yml`)**: `v*.*.*` 태그 push(또는 수동 실행) 시 테스트·패키징·SHA256 체크섬 검증 후 GitHub Release에 모든 브라우저 패키지를 자동 첨부합니다.
 
 ## GitHub
-https://github.com/astral/korea-finder
+<https://github.com/AstralEUD/korea-finder>
 
 ## 라이선스
+
 GPL 3.0

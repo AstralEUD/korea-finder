@@ -2,24 +2,30 @@
   "manifest_version": 3,
   "name": "Korea Finder",
   "short_name": "KoreaFinder",
-  "version": "0.2.4",
+  "version": "0.4.0",
   "author": "astral",
   "homepage_url": "https://github.com/AstralEUD/korea-finder",
-  "description": "Shift+K (customizable) 로 각종 사이트의 국가 선택 목록에서 한국(South Korea / Republic of Korea / 대한민국 등)을 자동 선택.",
+  "description": "Shift+K (사용자 지정 가능)로 웹사이트 국가 선택 목록에서 대한민국(South Korea / Republic of Korea 등)을 빠르고 정확하게 자동 선택합니다.",
   "action": {
-    "default_icon": "icons/icon.png",
-    "default_popup": "popup.html"
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_popup": "src/popup/popup.html"
   },
   "icons": {
-    "16": "icons/icon.png",
-    "32": "icons/icon.png",
-    "48": "icons/icon.png",
-    "128": "icons/icon.png"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
   },
   "permissions": [
     "scripting",
     "activeTab",
-    "storage"
+    "storage",
+    "contextMenus"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -29,24 +35,42 @@
       "suggested_key": {
         "default": "Alt+Shift+K"
       },
-      "description": "Find and select Korea in country dropdown (fallback; user can set custom key in options)"
+      "description": "현재 페이지의 국가 선택 목록에서 대한민국을 자동 선택합니다."
     }
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background/serviceWorker.js"
   },
-  "options_page": "options.html",
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["contentScript.js"],
-      "run_at": "document_idle"
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "src/shared/constants.js",
+        "src/shared/storage.js",
+        "src/shared/shortcut.js",
+        "src/shared/matcher.js",
+        "src/content/toast.js",
+        "src/content/domFinder.js",
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["data/koreaVariants.json"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "data/koreaVariants.json"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ]
 }

@@ -1,0 +1,62 @@
+name: Release Multi-Browser Packages
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag name (e.g. v0.4.0)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build & Publish Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run tests
+        run: npm test
+
+      - name: Package all browser targets
+        run: npm run package
+
+      - name: Verify release version & checksums
+        run: |
+          VERSION=$(node -p "require('./manifest.json').version")
+          echo "MANIFEST_VERSION=$VERSION" >> "$GITHUB_ENV"
+          if [ -n "${GITHUB_REF_NAME:-}" ] && [[ "${GITHUB_REF_NAME}" == v* ]]; then
+            TAG_VER="${GITHUB_REF_NAME#v}"
+            if [ "$TAG_VER" != "$VERSION" ]; then
+              echo "Tag version ($TAG_VER) does not match manifest.json version ($VERSION)"
+              exit 1
+            fi
+          fi
+          (cd dist && sha256sum -c SHA256SUMS.txt)
+          ls -lh dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || format('v{0}', env.MANIFEST_VERSION) }}
+          name: Korea Finder v${{ env.MANIFEST_VERSION }}
+          generate_release_notes: true
+          files: |
+            dist/korea-finder-v*-chrome.zip
+            dist/korea-finder-v*-edge.zip
+            dist/korea-finder-v*-firefox.zip
+            dist/korea-finder-v*-firefox.xpi
+            dist/korea-finder-v*-whale.zip
+            dist/SHA256SUMS.txt
