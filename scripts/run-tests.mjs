@@ -435,6 +435,16 @@ function createDomEnvironment() {
       this.dispatchEvent(new MiniEvent('click', { bubbles: true, cancelable: true }));
     }
 
+    contains(other) {
+      if (!other) return false;
+      let cur = other;
+      while (cur) {
+        if (cur === this) return true;
+        cur = cur.parentNode || null;
+      }
+      return false;
+    }
+
     closest(selector) {
       let cur = this;
       while (cur && cur.nodeType === 1) {

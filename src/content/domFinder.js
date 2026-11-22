@@ -56,25 +56,42 @@
     return active;
   }
 
+  function nodeContains(parent, child) {
+    if (!parent || !child) return false;
+    if (typeof parent.contains === 'function') {
+      try {
+        return parent.contains(child);
+      } catch (_e) {
+        // Fallback to manual traversal
+      }
+    }
+    let cur = child;
+    while (cur) {
+      if (cur === parent) return true;
+      cur = cur.parentNode || cur.parentElement || null;
+    }
+    return false;
+  }
+
   function isPreferredElement(el, preferredTarget) {
-    if (!el || !preferredTarget || !(preferredTarget instanceof Element)) {
+    if (!el || !preferredTarget) {
       return false;
     }
     if (
       el === preferredTarget ||
-      el.contains(preferredTarget) ||
-      preferredTarget.contains(el)
+      nodeContains(el, preferredTarget) ||
+      nodeContains(preferredTarget, el)
     ) {
       return true;
     }
     const itiRoot = preferredTarget.closest && preferredTarget.closest('.iti');
-    if (itiRoot && itiRoot.contains(el)) {
+    if (itiRoot && nodeContains(itiRoot, el)) {
       return true;
     }
     const labelEl = preferredTarget.closest && preferredTarget.closest('label');
     if (labelEl) {
-      if (labelEl.contains(el)) return true;
-      const forId = labelEl.getAttribute('for');
+      if (nodeContains(labelEl, el)) return true;
+      const forId = labelEl.getAttribute && labelEl.getAttribute('for');
       if (forId && el.id === forId) return true;
     }
     return false;
